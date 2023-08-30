@@ -5,9 +5,9 @@ type 'a t = { g : 'a [@global] } [@@unboxed]
 (* We want to ensure the derived operations are exactly the same as for the inner type, so
    we define them directly. *)
 
-let[@inline] create g =  { g }
+let[@inline] create g = [%ocaml.local] { g }
 let[@inline] g ({ g } [@local]) = g
-let[@inline] map ({ g } [@local]) ~f:(f [@local]) =  { g = f g }
+let[@inline] map ({ g } [@local]) ~f:(f [@local]) = [%ocaml.local] { g = f g }
 let[@inline] compare compare_g { g = a } { g = b } = compare_g a b
 let[@inline] hash_fold_t hash_fold_g hash_state { g } = hash_fold_g hash_state g
 let[@inline] sexp_of_t sexp_of_g { g } = sexp_of_g g
