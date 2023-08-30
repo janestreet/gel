@@ -19,12 +19,12 @@ let[@inline] equal equal_g { g = a } { g = b } = equal_g a b
    _doesn't_ change the bin_io shape, which is what we want here. *)
 include
   Bin_prot.Utils.Make_binable1_without_uuid [@alert "-legacy"] [@inlined hint] (struct
-    module Binable = struct
-      type 'a t = 'a [@@deriving bin_io]
-    end
+  module Binable = struct
+    type 'a t = 'a [@@deriving bin_io]
+  end
 
-    type nonrec 'a t = 'a t
+  type nonrec 'a t = 'a t
 
-    let[@inline] of_binable g = { g }
-    let[@inline] to_binable { g } = g
-  end)
+  let[@inline] of_binable g = { g }
+  let[@inline] to_binable { g } = g
+end)
