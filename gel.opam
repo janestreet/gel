@@ -11,7 +11,9 @@ build: [
 ]
 depends: [
   "ocaml" {>= "4.14.0"}
-  "dune" {>= "2.0.0"}
+  "base"
+  "ppx_jane"
+  "dune"     {>= "2.0.0"}
 ]
 available: arch != "arm32" & arch != "x86_32"
 synopsis: "A library to mark non-record fields global."
