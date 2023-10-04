@@ -40,3 +40,15 @@ val create : 'a -> ('a t[@local])
 val g : ('a t[@local]) -> 'a
 val map : ('a t[@local]) -> f:(('a -> 'b)[@local]) -> ('b t[@local])
 val globalize : _ -> ('a t[@local]) -> 'a t
+
+(** Removes a [Gel.t] from inside an option type with zero runtime cost. This is useful
+    when some other function returns an [X.t Gel.t option], you know [X.t] is
+    mode-crossing, and you want to drop the inner [Gel.t] without allocating another local
+    option. *)
+val drop_some : ('a t option[@local]) -> ('a option[@local])
+
+(** Like [drop_some], but for the [Ok _] branch of a result. *)
+val drop_ok : (('a t, 'b) Result.t[@local]) -> (('a, 'b) Result.t[@local])
+
+(** Like [drop_some], but for the [Error _] branch of a result. *)
+val drop_error : (('a, 'b t) Result.t[@local]) -> (('a, 'b) Result.t[@local])
