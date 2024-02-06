@@ -33,22 +33,21 @@ open! Base
         | Baz of global_ string * int * global_ string
     ]}
 *)
-type 'a t = { g : 'a [@global] }
-[@@unboxed] [@@deriving bin_io, compare, equal, hash, sexp]
+type 'a t = { g : 'a } [@@unboxed] [@@deriving bin_io, compare, equal, hash, sexp]
 
-val create : 'a -> ('a t[@local])
-val g : ('a t[@local]) -> 'a
-val map : ('a t[@local]) -> f:(('a -> 'b)[@local]) -> ('b t[@local])
-val globalize : _ -> ('a t[@local]) -> 'a t
+val create : 'a -> 'a t
+val g : 'a t -> 'a
+val map : 'a t -> f:('a -> 'b) -> 'b t
+val globalize : _ -> 'a t -> 'a t
 
 (** Removes a [Gel.t] from inside an option type with zero runtime cost. This is useful
     when some other function returns an [X.t Gel.t option], you know [X.t] is
     mode-crossing, and you want to drop the inner [Gel.t] without allocating another local
     option. *)
-val drop_some : ('a t option[@local]) -> ('a option[@local])
+val drop_some : 'a t option -> 'a option
 
 (** Like [drop_some], but for the [Ok _] branch of a result. *)
-val drop_ok : (('a t, 'b) Result.t[@local]) -> (('a, 'b) Result.t[@local])
+val drop_ok : ('a t, 'b) Result.t -> ('a, 'b) Result.t
 
 (** Like [drop_some], but for the [Error _] branch of a result. *)
-val drop_error : (('a, 'b t) Result.t[@local]) -> (('a, 'b) Result.t[@local])
+val drop_error : ('a, 'b t) Result.t -> ('a, 'b) Result.t
