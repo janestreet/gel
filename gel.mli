@@ -51,3 +51,18 @@ val drop_ok : ('a t, 'b) Result.t -> ('a, 'b) Result.t
 
 (** Like [drop_some], but for the [Error _] branch of a result. *)
 val drop_error : ('a, 'b t) Result.t -> ('a, 'b) Result.t
+
+(** Treat an existing global option as a local while maintaining the knowledge that the
+    data inside the option is global. Zero runtime cost.
+
+    "Injects some gel between the option and its [Some _] case." *)
+val inject_some : 'a option -> 'a t option
+
+(** Like [inject_some], but for the [Ok _] case of a [result]. *)
+val inject_ok : ('a, 'b) Result.t -> ('a t, 'b) Result.t
+
+(** Like [inject_some], but for the [Error _] case of a [result]. *)
+val inject_error : ('a, 'b) Result.t -> ('a, 'b t) Result.t
+
+(** Like [inject_some], but for the contents of a [result]. *)
+val inject_result : ('a, 'b) Result.t -> ('a t, 'b t) Result.t

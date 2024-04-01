@@ -15,21 +15,35 @@ let[@inline] t_of_sexp g_of_sexp sexp = { g = g_of_sexp sexp }
 let[@inline] globalize _ { g } = { g }
 let[@inline] equal equal_g { g = a } { g = b } = equal_g a b
 
-(* Proof that [extract_opt] can be safely implemented in normal ocaml. But this
+(* Proof that [drop_some] can be safely implemented in normal ocaml. But this
    implementation allocates a second option locally. *)
-let _extract_opt_proof : 'a t option -> 'a option =
+let _drop_some_proof : 'a t option -> 'a option =
   fun x ->
   match x with
   | None -> None
   | Some { g } -> Some g
 ;;
 
-(* This version of [extract_opt] does not. *)
+(* This version of [drop_some] does not. *)
 external drop_some : 'a t option -> 'a option = "%identity"
 
 (* A similar argument applies to [drop_ok] and [drop_error]. *)
 external drop_ok : ('a t, 'b) Result.t -> ('a, 'b) Result.t = "%identity"
 external drop_error : ('a, 'b t) Result.t -> ('a, 'b) Result.t = "%identity"
+
+(* Proof that [inject_some] can be safely implemented in normal ocaml. But this
+   implementation allocates a second option locally. *)
+let _inject_some : 'a option -> 'a t option =
+  fun x ->
+  match x with
+  | None -> None
+  | Some y -> Some { g = y }
+;;
+
+external inject_some : 'a option -> 'a t option = "%identity"
+external inject_ok : ('a, 'b) Result.t -> ('a t, 'b) Result.t = "%identity"
+external inject_error : ('a, 'b) Result.t -> ('a, 'b t) Result.t = "%identity"
+external inject_result : ('a, 'b) Result.t -> ('a t, 'b t) Result.t = "%identity"
 
 (* We specifically use the "legacy" [Make_binable1_without_uuid] function, because it
    _doesn't_ change the bin_io shape, which is what we want here. *)
